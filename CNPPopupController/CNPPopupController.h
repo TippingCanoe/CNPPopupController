@@ -17,6 +17,7 @@
 @property (nonatomic, weak) id <CNPPopupControllerDelegate> delegate;
 
 - (instancetype)initWithContents:(NSArray *)contents;
+- (instancetype)initWithPopupView:(UIView *)popUpView;
 
 - (void)presentPopupControllerAnimated:(BOOL)flag;
 - (void)dismissPopupControllerAnimated:(BOOL)flag;

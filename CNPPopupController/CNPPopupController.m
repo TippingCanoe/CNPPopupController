@@ -66,6 +66,39 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
     return self;
 }
 
+- (instancetype)initWithPopupView:(UIView *)popUpView {
+    self = [super init];
+    if (self) {
+        
+        self.popupView = popUpView;
+        self.popupView.clipsToBounds = YES;
+        
+        self.maskView = [[UIView alloc] initWithFrame:self.applicationWindow.bounds];
+        self.maskView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.7];
+        self.backgroundTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBackgroundTapGesture:)];
+        self.backgroundTapRecognizer.delegate = self;
+        [self.maskView addGestureRecognizer:self.backgroundTapRecognizer];
+        [self.maskView addSubview:self.popupView];
+        
+        self.theme = [CNPPopupTheme defaultTheme];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationWillChange)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationChanged)
+                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                   object:nil];
+        
+    }
+    return self;
+}
+
 - (void)dealloc {
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
